@@ -55,6 +55,4 @@ docker-compose up  # Run
 
 ## Demo
 
-The following video shows the app working:
-
-![](docs/demo.mov)
+In the `docs` folder, a video of the working app (demo.mov) is included.
