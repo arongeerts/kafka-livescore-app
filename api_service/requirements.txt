@@ -1,0 +1,4 @@
+kafka-python==2.0.2
+FastAPI==0.52.0
+uvicorn==0.12.2
+websockets

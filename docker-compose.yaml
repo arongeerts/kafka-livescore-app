@@ -1,0 +1,44 @@
+version: "3.8"
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181"
+    hostname: zookeeper
+  kafka:
+    image: wurstmeister/kafka
+    command: [ start-kafka.sh ]
+    ports:
+      - "9092"
+    hostname: kafka
+    environment:
+      KAFKA_CREATE_TOPICS: "raw-events:1:1"
+      KAFKA_ADVERTISED_HOST_NAME: kafka # docker-machine ip
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_PORT: 9092
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - "zookeeper"
+  producer:
+    build: producers
+    image: producer
+    depends_on:
+      - "kafka"
+    ports:
+      - "5001:5000"
+  api:
+    build: api_service
+    image: api
+    depends_on:
+      - "kafka"
+    ports:
+      - "5000:5000"
+  ui:
+    build: ui
+    image: ui
+    depends_on:
+      - "producer"
+      - "api"
+    ports:
+      - 3000:3000
